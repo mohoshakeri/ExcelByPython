@@ -3,12 +3,11 @@ from openpyxl import Workbook, load_workbook, styles
 from string import ascii_uppercase
 
 class Excel:
-    """
-    A class that helps you by its functions to work easier with Excel data
+    """A class that helps you by its functions to work easier with Excel data
     
-    params:
-        file (str) : file name or file path + 'xlsx'
-            Tip : if file not exist its will be create.
+    Args:
+        file (str): file name or file path + 'xlsx'
+            Tip: if file not exist its will be create.
     """
     def __init__(self, file):
         try:
@@ -20,10 +19,9 @@ class Excel:
             self.workbook.save(file)
     
     def excel_columns(self):
-        """
-        Internal generator
+        """Internal generator
         
-        Generate excel column : [A, B ... AA, AB ... XFE, XFD]
+        Generate excel column: [A, B ... AA, AB ... XFE, XFD]
         """
         break_check = False
         alphabet = list(ascii_uppercase)
@@ -33,9 +31,9 @@ class Excel:
             for item_2 in alphabet:
                 yield item_1 + item_2
         for item_1 in alphabet:
-            if break_check : break
+            if break_check: break
             for item_2 in alphabet:
-                if break_check : break
+                if break_check: break
                 for item_3 in alphabet:
                     if (item_1 + item_2 + item_3) == 'XFE':
                         break_check = True
@@ -43,8 +41,7 @@ class Excel:
                     yield item_1 + item_2 + item_3
     
     def excel_column_index(self, column):
-        """
-        Internal function
+        """Internal function
         
         Get index of columns of Excel
         """
@@ -55,8 +52,7 @@ class Excel:
                 return counter
     
     def sheet_config(self, sheet, read=False):
-        """
-        Internal function
+        """Internal function
         
         Config sheet of workbook
         if read = True it configs sheet for read functions
@@ -64,7 +60,7 @@ class Excel:
         try:
             sheet = self.workbook[sheet]
         except KeyError:
-            if read : raise KeyError(f"Worksheet {sheet} does not exist")
+            if read: raise KeyError(f"Worksheet {sheet} does not exist")
             sheets = self.workbook.sheetnames
             if 'Sheet' in sheets:
                 defult = self.workbook['Sheet']
@@ -74,8 +70,7 @@ class Excel:
         return sheet
     
     def column_verify(self, column):
-        """
-        Internal function
+        """Internal function
         
         Verify column name
         """
@@ -83,26 +78,24 @@ class Excel:
             raise KeyError("Column letter must be between A, B ... AA, AB and XFD")
     
     def row_verify(self, row):
-        """
-        Internal function
+        """Internal function
         
         Verify row index
         """
-        if row < 1 or row > 1048576 :
+        if row < 1 or row > 1048576:
             raise KeyError("Row index must be integer between 1 and 1048576")
     
-    def write_on_column(self, sheet:str, column:str, values:Iterable, center_style = False):
-        """
-        Write values of a Iterable on a column
+    def write_on_column(self, sheet:str, column:str, values:Iterable, center_style:bool = False):
+        """Write some values of a Iterable on a column
         
         Args:
-            sheet (str) : Sheet name. if it not exist will be create\n
-            column (str) : A excel column name. Ex: AB **between A and XFD**\n
-            values (iterable) : Contains values that will fill cells
-            center_style (bool) [optional] : if equal True styles of the cells will be middle
+            sheet (str): Sheet name. if it not exist will be create
+            column (str): A excel column name. Ex AB **between A and XFD**
+            values (iterable): Contains values that will fill cells
+            center_style (bool) [optional]: if equal True styles of the cells will be middle (defult = False)
         
         Return:
-            True
+            True: if commands are properly executed
         """
         sheet = str(sheet)
         self.column_verify(column)
@@ -115,18 +108,17 @@ class Excel:
         self.workbook.save(self.file)
         return True
     
-    def write_on_row(self, sheet:str, row:int, values:Iterable, center_style = False):
-        """
-        Write values of a Iterable on a row
+    def write_on_row(self, sheet:str, row:int, values:Iterable, center_style:bool = False):
+        """Write some values of a Iterable on a row
         
         Args:
-            sheet (str) : Sheet name. if it not exist will be create\n
-            row (int) : A excel row index. Ex: 12 **between 1 and 1048576**\n
-            values (iterable) : Contains values that will fill cells\n
-            center_style (bool) [optional] : if equal True styles of the cells will be middle
+            sheet (str): Sheet name. if it not exist will be create
+            row (int): A excel row index. Ex 12 **between 1 and 1048576**
+            values (iterable): Contains values that will fill cells
+            center_style (bool) [optional]: if equal True styles of the cells will be middle (defult = False)
         
         Return:
-            True
+            True: if commands are properly executed
         """
         sheet = str(sheet)
         self.row_verify(row)        
@@ -140,19 +132,18 @@ class Excel:
         self.workbook.save(self.file)
         return True
     
-    def write_on_cell(self, sheet:str, column:str, row:int, value, center_style = False):
-        """
-        Write a value on a cell
+    def write_on_cell(self, sheet:str, column:str, row:int, value, center_style:bool = False):
+        """Write a value on a cell
         
         Args:
-            sheet (str) : Sheet name. if it not exist will be create\n
-            column (str) : A excel column name. Ex: AB **between A and XFD**\n
-            row (int) : A excel row index. Ex: 12 **between 1 and 1048576**\n
-            value (any except Iterables) : value that will fill cells\n
-            center_style (bool) [optional] : if equal True styles of the cells will be middle
+            sheet (str): Sheet name. if it not exist will be create
+            column (str): A excel column name. Ex AB **between A and XFD**
+            row (int): A excel row index. Ex 12 **between 1 and 1048576**
+            value (any except Iterables): value that will fill cells
+            center_style (bool) [optional]: if equal True styles of the cells will be middle (defult = False)
         
         Return:
-            True
+            True: if commands are properly executed
         """
         sheet = str(sheet)
         self.column_verify(column)
@@ -166,12 +157,11 @@ class Excel:
         return True
     
     def read_column(self, sheet:str, column:str):
-        """
-        Read values of a excel column
+        """Read some values of a excel column
         
         Args:
-            sheet (str) : Sheet name\n
-            column (str) : A excel column name. Ex: AB **between A and XFD**\n
+            sheet (str): Sheet name
+            column (str): A excel column name. Ex AB **between A and XFD**
         
         Yields:
             Column values
@@ -185,12 +175,11 @@ class Excel:
             yield row[self.excel_column_index(column)-1]
 
     def read_row(self, sheet:str, row:int):
-        """
-        Read values of a excel row
+        """Read some values of a excel row
         
         Args:
-            sheet (str) : Sheet name\n
-            row (int) : A excel row index. Ex: 12 **between 1 and 1048576**\n
+            sheet (str): Sheet name
+            row (int): A excel row index. Ex 12 **between 1 and 1048576**
         
         Yields:
             Row values
@@ -208,13 +197,12 @@ class Excel:
                     yield cell
     
     def read_cell(self, sheet:str, column:str, row:int):
-        """
-        Read value of a excel cell
+        """Read value of a excel cell
         
         Args:
-            sheet (str) : Sheet name\n
-            column (str) : A excel column name. Ex: AB **between A and XFD**\n
-            row (int) : A excel row index. Ex: 12 **between 1 and 1048576**\n
+            sheet (str): Sheet name
+            column (str): A excel column name. Ex AB **between A and XFD**
+            row (int): A excel row index. Ex 12 **between 1 and 1048576**
         
         Return:
             The cell value
