@@ -20,18 +20,24 @@ class Excel:
             self.workbook = Workbook()
             self.workbook.save(file)
 
-    def _excel_columns(self):
+    def _excel_columns(self, start='A'):
         """Internal generator
 
         Generate excel column: [A, B ... AA, AB ... XFE, XFD]
         """
         break_check = False
+        start_check = False
         alphabet = list(ascii_uppercase)
-        for item in alphabet:
-            yield item
-        for item_1 in alphabet:
-            for item_2 in alphabet:
-                yield item_1 + item_2
+        start_len = len(start)
+        if start_len == 1:
+            for item in alphabet:
+                if start_check is False and start == item: start_check = True
+                if start_check: yield item
+        if start_len == 1 or start_len == 2:
+            for item_1 in alphabet:
+                for item_2 in alphabet:
+                    if start_check is False and item_1 + item_2 == start: start_check = True
+                    if start_check: yield item_1 + item_2
         for item_1 in alphabet:
             if break_check:
                 break
@@ -42,7 +48,8 @@ class Excel:
                     if (item_1 + item_2 + item_3) == "XFE":
                         break_check = True
                         break
-                    yield item_1 + item_2 + item_3
+                    if start_check is False and item_1 + item_2 + item_3 == start: start_check = True
+                    if start_check: yield item_1 + item_2 + item_3
 
     def _excel_column_index(self, column):
         """Internal function
@@ -91,7 +98,7 @@ class Excel:
             raise KeyError("Row index must be integer between 1 and 1048576")
 
     def write_on_column(
-        self, sheet: str, column: str, values: Iterable, center_style: bool = False
+        self, sheet: str, column: str, values: Iterable, row_start: int = 1, center_style: bool = False
     ):
         """Write some values of a Iterable on a column
 
@@ -99,6 +106,7 @@ class Excel:
             sheet (str): Sheet name. if it not exist will be create
             column (str): an excel column name. Ex AB **between A and XFD**
             values (iterable): Contains values that will fill cells
+            row_start (int) [optional]: an Excel row index that starts the function from there. Ex 12 **between 1 and 1048576** (default = 1)
             center_style (bool) [optional]: if equal True styles of the cells will be middle (default = False)
 
         Return:
@@ -109,16 +117,16 @@ class Excel:
         sheet = self._sheet_config(sheet)
 
         for index, item in enumerate(values):
-            sheet[f"{column.upper()}{index + 1}"] = item
+            sheet[f"{column.upper()}{index + row_start}"] = item
             if center_style:
-                sheet[f"{column.upper()}{index + 1}"].alignment = styles.Alignment(
+                sheet[f"{column.upper()}{index + row_start}"].alignment = styles.Alignment(
                     horizontal="center", vertical="center"
                 )
         self.workbook.save(self.file)
         return True
 
     def write_on_row(
-        self, sheet: str, row: int, values: Iterable, center_style: bool = False
+        self, sheet: str, row: int, values: Iterable, col_start: str = 'A', center_style: bool = False
     ):
         """Write some values of a Iterable on a row
 
@@ -126,6 +134,7 @@ class Excel:
             sheet (str): Sheet name. if it not exist will be create
             row (int): an excel row index. Ex 12 **between 1 and 1048576**
             values (iterable): Contains values that will fill cells
+            col_start (str) [optional]: an Excel column that starts the function from there. Ex AB **between A and XFD** (default = A)
             center_style (bool) [optional]: if equal True styles of the cells will be middle (default = False)
 
         Return:
@@ -135,7 +144,7 @@ class Excel:
         self._row_verify(row)
         sheet = self._sheet_config(sheet)
 
-        for item, column in zip(values, self._excel_columns()):
+        for item, column in zip(values, self._excel_columns(start=col_start)):
             sheet[f"{column.upper()}{row}"] = item
             if center_style:
                 sheet[f"{column.upper()}{row}"].alignment = styles.Alignment(
@@ -173,12 +182,14 @@ class Excel:
         self.workbook.save(self.file)
         return True
 
-    def read_column(self, sheet: str, column: str):
+    def read_column(self, sheet: str, column: str, row_start: int = 1, row_end: int = 1048576):
         """Read some values of an excel column
 
         Args:
             sheet (str): Sheet name
             column (str): an excel column name. Ex AB **between A and XFD**
+            row_start (int) [optional]: an Excel row index that starts the generator from there. Ex 12 **between 1 and 1048576** (default = 1)
+            row_end (int) [optional]: an Excel row index that breake the generator from there. Ex 12 **between 1 and 1048576** (default = 1048576)
 
         Yields:
             Column values
@@ -188,16 +199,20 @@ class Excel:
         sheet = self._sheet_config(sheet, True)
 
         generator = sheet.values
-        for row in generator:
-            yield row[self._excel_column_index(column) - 1]
+        col_index = self._excel_column_index(column)
+        for index,row in enumerate(generator):
+            if (index + 1) < row_start : continue
+            if (index + 1) > row_end : break
+            yield row[col_index - 1]
 
-    def read_row(self, sheet: str, row: int):
+    def read_row(self, sheet: str, row: int, col_start: str = 'A', col_end: str = 'XFD'):
         """Read some values of an excel row
 
         Args:
             sheet (str): Sheet name
             row (int): an excel row index. Ex 12 **between 1 and 1048576**
-
+            col_start (str) [optional]: an Excel column that starts the generator from there. Ex AB **between A and XFD** (default = A)
+            col_end (str) [optional]: an Excel column that breake the generator from there. Ex AB **between A and XFD** (default = XFD)
         Yields:
             Row values
         """
@@ -206,11 +221,15 @@ class Excel:
         sheet = self._sheet_config(sheet, True)
 
         generator = sheet.values
+        col_index_start = self._excel_column_index(col_start)
+        col_index_end = self._excel_column_index(col_end)
         counter = 0
         for row_ in generator:
             counter += 1
             if counter == row:
-                for cell in row_:
+                for col_index,cell in enumerate(row_):
+                    if (col_index + 1) < col_index_start : continue
+                    if (col_index + 1) > col_index_end : break
                     yield cell
 
     def read_cell(self, sheet: str, column: str, row: int):
