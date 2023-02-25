@@ -13,12 +13,12 @@ class Excel:
 
     def __init__(self, file):
         try:
-            self.file = file
-            self.workbook = load_workbook(file)
+            self._file = file
+            self._workbook = load_workbook(file)
         except FileNotFoundError:
-            self.file = file
-            self.workbook = Workbook()
-            self.workbook.save(file)
+            self._file = file
+            self._workbook = Workbook()
+            self._workbook.save(file)
 
     def _excel_columns(self, start='A'):
         """Internal generator
@@ -69,16 +69,16 @@ class Excel:
         if read = True it configs sheet for read functions
         """
         try:
-            sheet = self.workbook[sheet]
+            sheet = self._workbook[sheet]
         except KeyError:
             if read:
                 raise KeyError(f"Worksheet {sheet} does not exist")
-            sheets = self.workbook.sheetnames
+            sheets = self._workbook.sheetnames
             if "Sheet" in sheets:
-                default = self.workbook["Sheet"]
-                self.workbook.remove(default)
-            self.workbook.create_sheet(sheet)
-            sheet = self.workbook[sheet]
+                default = self._workbook["Sheet"]
+                self._workbook.remove(default)
+            self._workbook.create_sheet(sheet)
+            sheet = self._workbook[sheet]
         return sheet
 
     def _column_verify(self, column):
@@ -122,7 +122,7 @@ class Excel:
                 sheet[f"{column.upper()}{index + row_start}"].alignment = styles.Alignment(
                     horizontal="center", vertical="center"
                 )
-        self.workbook.save(self.file)
+        self._workbook.save(self._file)
         return True
 
     def write_on_row(
@@ -151,7 +151,7 @@ class Excel:
                     horizontal="center", vertical="center"
                 )
 
-        self.workbook.save(self.file)
+        self._workbook.save(self._file)
         return True
 
     def write_on_cell(
@@ -179,7 +179,7 @@ class Excel:
             sheet[f"{column}{row}"].alignment = styles.Alignment(
                 horizontal="center", vertical="center"
             )
-        self.workbook.save(self.file)
+        self._workbook.save(self._file)
         return True
 
     def read_column(self, sheet: str, column: str, row_start: int = 1, row_end: int = 1048576):
