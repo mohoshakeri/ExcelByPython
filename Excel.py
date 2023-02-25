@@ -106,7 +106,7 @@ class Excel:
             sheet (str): Sheet name. if it not exist will be create
             column (str): an excel column name. Ex AB **between A and XFD**
             values (iterable): Contains values that will fill cells
-            row_start (int) [optional]: an Excel row index that starts the function from there. Ex 12 **between 1 and 1048576** (default = 1)
+            row_start (int) [optional]: an Excel row index that the function will start from there. Ex 12 **between 1 and 1048576** (default = 1)
             center_style (bool) [optional]: if equal True styles of the cells will be middle (default = False)
 
         Return:
@@ -134,7 +134,7 @@ class Excel:
             sheet (str): Sheet name. if it not exist will be create
             row (int): an excel row index. Ex 12 **between 1 and 1048576**
             values (iterable): Contains values that will fill cells
-            col_start (str) [optional]: an Excel column that starts the function from there. Ex AB **between A and XFD** (default = A)
+            col_start (str) [optional]: an Excel column that the function will start from there. Ex AB **between A and XFD** (default = A)
             center_style (bool) [optional]: if equal True styles of the cells will be middle (default = False)
 
         Return:
@@ -188,8 +188,8 @@ class Excel:
         Args:
             sheet (str): Sheet name
             column (str): an excel column name. Ex AB **between A and XFD**
-            row_start (int) [optional]: an Excel row index that starts the generator from there. Ex 12 **between 1 and 1048576** (default = 1)
-            row_end (int) [optional]: an Excel row index that breake the generator from there. Ex 12 **between 1 and 1048576** (default = 1048576)
+            row_start (int) [optional]: an Excel row index that the generator will start from there. Ex 12 **between 1 and 1048576** (default = 1)
+            row_end (int) [optional]: an Excel row index that the generator will break in there. Ex 12 **between 1 and 1048576** (default = 1048576)
 
         Yields:
             Column values
@@ -211,8 +211,8 @@ class Excel:
         Args:
             sheet (str): Sheet name
             row (int): an excel row index. Ex 12 **between 1 and 1048576**
-            col_start (str) [optional]: an Excel column that starts the generator from there. Ex AB **between A and XFD** (default = A)
-            col_end (str) [optional]: an Excel column that breake the generator from there. Ex AB **between A and XFD** (default = XFD)
+            col_start (str) [optional]: an Excel column that the generator will start from there. Ex AB **between A and XFD** (default = A)
+            col_end (str) [optional]: an Excel column that the generator will break in there. Ex AB **between A and XFD** (default = XFD)
         Yields:
             Row values
         """
