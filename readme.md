@@ -34,11 +34,8 @@ work_book =  Excel("file.xlsx") #or an excel file path
 ```python
 sheet = "Numbers"
 data = [12,15,18,21]
-work_book.write_on_column(sheet, "B", data, center_style = False)
+work_book.write_on_column(sheet, "B", data)
 
-# center_style is optional
-
-# if center_style equal True, styles of the cells will be middle (default = False)
 ```
 
 ### Result :
@@ -50,18 +47,18 @@ work_book.write_on_column(sheet, "B", data, center_style = False)
 | **3** |     | 18  |     |
 | **4** |     | 21  |     |
 
+* **row_start** is optional, its an Excel row index that the function will start from there. Ex 12 **between 1 and 1048576** (default = 1)
+
+* **center_style** is optional, if equal True, styles of the cells will be middle (default = False)
 ---
+
 
 ### 2. Write on a row
 
 ```python
 sheet = "Numbers"
 data = [12,15,18]
-work_book.write_on_row(sheet, 3, data, center_style = False)
-
-# center_style is optional
-
-# if center_style equal True, styles of the cells will be middle (default = False)
+work_book.write_on_row(sheet, 3, data)
 ```
 
 ### Result :
@@ -73,6 +70,10 @@ work_book.write_on_row(sheet, 3, data, center_style = False)
 | **3** | 12  | 15  | 18  |
 | **4** |     |     |     |
 
+* **col_start** is optional, its an Excel column that the function will start from there. Ex AB **between A and XFD** (default = 1)
+
+* **center_style** is optional, if equal True, styles of the cells will be middle (default = False)
+
 ---
 
 ### 3. Write on a cell
@@ -82,11 +83,7 @@ sheet = "Numbers"
 data = 18
 column = "B"
 row = 3
-work_book.write_on_row(sheet, column, row data, center_style = False)
-
-# center_style is optional
-
-# if center_style equal True, styles of the cells will be middle (default = False)
+work_book.write_on_row(sheet, column, row data)
 ```
 
 ### Result :
@@ -97,6 +94,8 @@ work_book.write_on_row(sheet, column, row data, center_style = False)
 | **2** |     |     |     |
 | **3** |     | 18  |     |
 | **4** |     |     |     |
+
+* **center_style** is optional, if equal True, styles of the cells will be middle (default = False)
 
 #
 
@@ -118,11 +117,17 @@ work_book.write_on_row(sheet, column, row data, center_style = False)
 ```python
 sheet = "Users"
 data = work_book.read_column(sheet, "B")
-print(data)
+for item in data:
+    print(item)
 
->>> ["Age","35","12","27"]
+>>> "Age"
+>>> "35"
+>>> "12"
+>>> "27"
 ```
+* **row_start** is optional, its an Excel row index that the generator will start from there. Ex 12 **between 1 and 1048576** (default = 1)
 
+* **row_end** is optional, its an Excel row index that the generator will break in there. Ex 12 **between 1 and 1048576** (default = 1048576)
 ---
 
 ### 2. Read a row
@@ -130,11 +135,16 @@ print(data)
 ```python
 sheet = "Users"
 data = work_book.read_row(sheet, 3)
-print(data)
+for item in data:
+    print(item)
 
->>> ["2","Amir","12"]
+>>> "2"
+>>> "Amir"
+>>> "12"
 ```
+* **col_start** is optional, its an Excel column that the generator will start from there. Ex AB **between A and XFD** (default = A)
 
+* **col_end** is optional, its an Excel column that the generator will break in there. Ex AB **between A and XFD** (default = XFD)
 ---
 
 ### 3. Read a cell
