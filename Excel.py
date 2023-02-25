@@ -20,7 +20,7 @@ class Excel:
             self.workbook = Workbook()
             self.workbook.save(file)
 
-    def excel_columns(self):
+    def _excel_columns(self):
         """Internal generator
 
         Generate excel column: [A, B ... AA, AB ... XFE, XFD]
@@ -44,18 +44,18 @@ class Excel:
                         break
                     yield item_1 + item_2 + item_3
 
-    def excel_column_index(self, column):
+    def _excel_column_index(self, column):
         """Internal function
 
         Get index of columns of Excel
         """
         counter = 0
-        for column_ in self.excel_columns():
+        for column_ in self._excel_columns():
             counter += 1
             if column_ == column:
                 return counter
 
-    def sheet_config(self, sheet, read=False):
+    def _sheet_config(self, sheet, read=False):
         """Internal function
 
         Config sheet of workbook
@@ -74,15 +74,15 @@ class Excel:
             sheet = self.workbook[sheet]
         return sheet
 
-    def column_verify(self, column):
+    def _column_verify(self, column):
         """Internal function
 
         Verify column name
         """
-        if column.upper() not in self.excel_columns():
+        if column.upper() not in self._excel_columns():
             raise KeyError("Column letter must be between A, B ... AA, AB and XFD")
 
-    def row_verify(self, row):
+    def _row_verify(self, row):
         """Internal function
 
         Verify row index
@@ -105,8 +105,8 @@ class Excel:
             True: if commands are properly executed
         """
         sheet = str(sheet)
-        self.column_verify(column)
-        sheet = self.sheet_config(sheet)
+        self._column_verify(column)
+        sheet = self._sheet_config(sheet)
 
         for index, item in enumerate(values):
             sheet[f"{column.upper()}{index + 1}"] = item
@@ -132,10 +132,10 @@ class Excel:
             True: if commands are properly executed
         """
         sheet = str(sheet)
-        self.row_verify(row)
-        sheet = self.sheet_config(sheet)
+        self._row_verify(row)
+        sheet = self._sheet_config(sheet)
 
-        for item, column in zip(values, self.excel_columns()):
+        for item, column in zip(values, self._excel_columns()):
             sheet[f"{column.upper()}{row}"] = item
             if center_style:
                 sheet[f"{column.upper()}{row}"].alignment = styles.Alignment(
@@ -161,9 +161,9 @@ class Excel:
             True: if commands are properly executed
         """
         sheet = str(sheet)
-        self.column_verify(column)
-        self.row_verify(row)
-        sheet = self.sheet_config(sheet)
+        self._column_verify(column)
+        self._row_verify(row)
+        sheet = self._sheet_config(sheet)
 
         sheet[f"{column}{row}"] = value
         if center_style:
@@ -184,12 +184,12 @@ class Excel:
             Column values
         """
         sheet = str(sheet)
-        self.column_verify(column)
-        sheet = self.sheet_config(sheet, True)
+        self._column_verify(column)
+        sheet = self._sheet_config(sheet, True)
 
         generator = sheet.values
         for row in generator:
-            yield row[self.excel_column_index(column) - 1]
+            yield row[self._excel_column_index(column) - 1]
 
     def read_row(self, sheet: str, row: int):
         """Read some values of an excel row
@@ -202,8 +202,8 @@ class Excel:
             Row values
         """
         sheet = str(sheet)
-        self.row_verify(row)
-        sheet = self.sheet_config(sheet, True)
+        self._row_verify(row)
+        sheet = self._sheet_config(sheet, True)
 
         generator = sheet.values
         counter = 0
@@ -225,12 +225,12 @@ class Excel:
             The cell value
         """
         sheet = str(sheet)
-        self.column_verify(column)
-        self.row_verify(row)
-        sheet = self.sheet_config(sheet)
+        self._column_verify(column)
+        self._row_verify(row)
+        sheet = self._sheet_config(sheet)
 
         generator = sheet.values
-        column = self.excel_column_index(column) - 1
+        column = self._excel_column_index(column) - 1
         counter = 0
         for row_ in generator:
             counter += 1
