@@ -116,7 +116,7 @@ work_book.write_on_row(sheet, column, row data)
 
 ```python
 sheet = "Users"
-data = work_book.read_column(sheet, "B")
+data = work_book.read_column(sheet, "C")
 for item in data:
     print(item)
 
