@@ -8,7 +8,7 @@ class Excel:
 
     Args:
         file (str): file name or file path + 'xlsx'
-            Tip: if file not exist its will be create.
+            Tip: if the file didn't exist it will be created.
     """
 
     def __init__(self, file):
@@ -54,7 +54,7 @@ class Excel:
     def _excel_column_index(self, column):
         """Internal function
 
-        Get index of columns of Excel
+        Get the index of Excel columns
         """
         counter = 0
         for column_ in self._excel_columns():
@@ -100,10 +100,10 @@ class Excel:
     def write_on_column(
         self, sheet: str, column: str, values: Iterable, row_start: int = 1, center_style: bool = False
     ):
-        """Write some values of a Iterable on a column
+        """Write some values of an Iterable on a column
 
         Args:
-            sheet (str): Sheet name. if it not exist will be create
+            sheet (str): Sheet name. if it didn't exist will be created
             column (str): an excel column name. Ex AB **between A and XFD**
             values (iterable): Contains values that will fill cells
             row_start (int) [optional]: an Excel row index that the function will start from there. Ex 12 **between 1 and 1048576** (default = 1)
@@ -128,10 +128,10 @@ class Excel:
     def write_on_row(
         self, sheet: str, row: int, values: Iterable, col_start: str = 'A', center_style: bool = False
     ):
-        """Write some values of a Iterable on a row
+        """Write some values of an Iterable on a row
 
         Args:
-            sheet (str): Sheet name. if it not exist will be create
+            sheet (str): Sheet name. if it didn't exist will be created
             row (int): an excel row index. Ex 12 **between 1 and 1048576**
             values (iterable): Contains values that will fill cells
             col_start (str) [optional]: an Excel column that the function will start from there. Ex AB **between A and XFD** (default = A)
@@ -160,7 +160,7 @@ class Excel:
         """Write a value on a cell
 
         Args:
-            sheet (str): Sheet name. if it not exist will be create
+            sheet (str): Sheet name. if it didn't exist will be created
             column (str): an excel column name. Ex AB **between A and XFD**
             row (int): an excel row index. Ex 12 **between 1 and 1048576**
             value (any except Iterables): value that will fill cells
@@ -233,7 +233,7 @@ class Excel:
                     yield cell
 
     def read_cell(self, sheet: str, column: str, row: int):
-        """Read value of an excel cell
+        """Read the value of an excel cell
 
         Args:
             sheet (str): Sheet name
